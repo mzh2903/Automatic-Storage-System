@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatic Storage System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="hideLoading()">
+
+  <!-- Animasi Loading -->
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div class="container" id="mainContent">
+    <h1>Automatic Storage System</h1>
+
+    <div class="status">
+      <p>Status: <span id="statusText">Stopped</span></p>
+    </div>
+
+    <div class="buttons">
+      <div class="button-group">
+        <div class="indicator" id="autoIndicator"></div>
+        <button id="autoButton" onclick="toggleAuto()">Auto Mode</button>
+      </div>
+
+      <div class="button-group">
+        <div class="indicator" id="manualIndicator"></div>
+        <button id="manualButton" onclick="toggleManual()">Manual Mode</button>
+      </div>
+
+      <div class="button-group">
+        <div class="indicator" id="stopIndicator"></div>
+        <button id="stopButton" onclick="stopMode()">Stop</button>
+      </div>
+
+      <div class="button-group">
+        <div class="indicator" id="emergencyIndicator"></div>
+        <button id="emergencyButton" onclick="toggleEmergency()">Emergency</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
