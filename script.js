@@ -1,49 +1,98 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBqiOw_mb-84K2K_Zjx_HP5nGSk9_w_p2E",
-  authDomain: "automatic-storage-system-c3ddf.firebaseapp.com",
-  databaseURL: "https://automatic-storage-system-c3ddf-default-rtdb.firebaseio.com",
-  projectId: "automatic-storage-system-c3ddf",
-  storageBucket: "automatic-storage-system-c3ddf.firebasestorage.app",
-  messagingSenderId: "987470488515",
-  appId: "1:987470488515:web:36d5de0507aee164249376",
-  measurementId: "G-TWE9XEH31R"
+  apiKey: "AIzaSyDPwu-688WqD2Sir7a5_FWYKW9UgfroCsI",
+  authDomain: "automatic-storage-system-86fc5.firebaseapp.com",
+  databaseURL: "https://automatic-storage-system-86fc5-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "automatic-storage-system-86fc5",
+  storageBucket: "automatic-storage-system-86fc5.firebasestorage.app",
+  messagingSenderId: "480557574750",
+  appId: "1:480557574750:web:4dd24fae6e33751a12a2cf",
+  measurementId: "G-QD81H8QBZ2"
 };
 
 // Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Loading Screen
+// 🔄 Animasi Loading
 function hideLoading() {
   setTimeout(() => {
     document.getElementById("loadingScreen").style.display = "none";
-  }, 3000);
+    document.getElementById("mainContent").style.display = "block";
+  }, 2000);
 }
 
-// Perbarui status ke Firebase
-function updateStatus(status) {
-  db.ref("status").set({ mode: status });
+// ⬇️ Fungsi menulis ke Firebase
+function updateFirebase(mode) {
+  db.ref("status").set({ mode });
 }
 
-// Realtime Update dari Firebase
+// ⬆️ Realtime Listener untuk membaca data Firebase
 db.ref("status").on("value", (snapshot) => {
   const data = snapshot.val();
   if (data) setMode(data.mode);
 });
 
-// Set Mode di UI
+// 🚦 Fungsi untuk mengubah tampilan mode
 function setMode(mode) {
   document.getElementById("statusText").textContent = mode;
+  
+  // Reset Semua Lampu
+  document.getElementById("autoIndicator").style.backgroundColor = "gray";
+  document.getElementById("manualIndicator").style.backgroundColor = "gray";
+  document.getElementById("stopIndicator").style.backgroundColor = "gray";
+  document.getElementById("emergencyIndicator").style.backgroundColor = "gray";
+
+  if (mode === "Auto") {
+    document.getElementById("autoIndicator").style.backgroundColor = "green";
+  } else if (mode === "Manual") {
+    document.getElementById("manualIndicator").style.backgroundColor = "yellow";
+  } else if (mode === "Stopped") {
+    document.getElementById("stopIndicator").style.backgroundColor = "red";
+  } else if (mode === "Emergency") {
+    startEmergencyBlink();
+  }
 }
 
-// Fungsi Tombol
-function toggleAuto() { updateStatus("Auto"); }
-function toggleManual() { updateStatus("Manual"); }
-function stopMode() { updateStatus("Stopped"); }
+// 🟢🔴 Flip-Flop Emergency (Kedip-Kedip)
+let emergencyInterval;
+function startEmergencyBlink() {
+  clearInterval(emergencyInterval);
+  let isOn = false;
+  emergencyInterval = setInterval(() => {
+    document.getElementById("emergencyIndicator").style.backgroundColor = isOn ? "red" : "gray";
+    isOn = !isOn;
+  }, 500);
+}
+
+// 🚀 Fungsi Tombol Auto Mode
+function toggleAuto() {
+  db.ref("status").once("value").then((snapshot) => {
+    if (snapshot.val()?.mode === "Stopped") updateFirebase("Auto");
+  });
+}
+
+// 🚀 Fungsi Tombol Manual Mode
+function toggleManual() {
+  db.ref("status").once("value").then((snapshot) => {
+    if (snapshot.val()?.mode === "Stopped") updateFirebase("Manual");
+  });
+}
+
+// 🛑 Fungsi Tombol Stop
+function stopMode() {
+  updateFirebase("Stopped");
+  clearInterval(emergencyInterval);
+}
+
+// ⚠️ Fungsi Emergency
 function toggleEmergency() {
   db.ref("status").once("value").then((snapshot) => {
-    if (snapshot.val()?.mode !== "Emergency") updateStatus("Emergency");
-    else updateStatus("Stopped");
+    if (snapshot.val()?.mode !== "Emergency") {
+      updateFirebase("Emergency");
+    } else {
+      updateFirebase("Stopped");
+      clearInterval(emergencyInterval);
+    }
   });
 }
