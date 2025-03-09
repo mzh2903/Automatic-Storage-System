@@ -1,3 +1,17 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyBqiOw_mb-84K2K_Zjx_HP5nGSk9_w_p2E",
+    authDomain: "automatic-storage-system-c3ddf.firebaseapp.com",
+    databaseURL: "https://automatic-storage-system-c3ddf-default-rtdb.firebaseio.com",
+    projectId: "automatic-storage-system-c3ddf",
+    storageBucket: "automatic-storage-system-c3ddf.firebasestorage.app",
+    messagingSenderId: "987470488515",
+    appId: "1:987470488515:web:36d5de0507aee164249376",
+    measurementId: "G-TWE9XEH31R"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
 let autoMode = false;
 let manualMode = false;
 let emergencyMode = false;
