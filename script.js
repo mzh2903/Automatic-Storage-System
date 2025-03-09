@@ -10,64 +10,40 @@ const firebaseConfig = {
   measurementId: "G-TWE9XEH31R"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-// Fungsi Loading
+// Loading Screen
 function hideLoading() {
   setTimeout(() => {
     document.getElementById("loadingScreen").style.display = "none";
-    document.getElementById("mainContent").style.display = "block";
   }, 3000);
 }
 
-// Fungsi Menulis Status ke Firebase
-function updateFirebase(status) {
+// Perbarui status ke Firebase
+function updateStatus(status) {
   db.ref("status").set({ mode: status });
 }
 
-// Fungsi Membaca Status dari Firebase (Realtime)
+// Realtime Update dari Firebase
 db.ref("status").on("value", (snapshot) => {
   const data = snapshot.val();
   if (data) setMode(data.mode);
 });
 
-// Fungsi Mengatur Mode
+// Set Mode di UI
 function setMode(mode) {
   document.getElementById("statusText").textContent = mode;
-  document.getElementById("autoIndicator").style.backgroundColor = (mode === "Auto") ? "green" : "gray";
-  document.getElementById("manualIndicator").style.backgroundColor = (mode === "Manual") ? "yellow" : "gray";
-  document.getElementById("stopIndicator").style.backgroundColor = (mode === "Stopped") ? "red" : "gray";
-  document.getElementById("emergencyIndicator").style.backgroundColor = (mode === "Emergency") ? "red" : "gray";
 }
 
-// Fungsi Mode Auto
-function toggleAuto() {
-  db.ref("status").once("value").then((snapshot) => {
-    if (snapshot.val()?.mode === "Stopped") updateFirebase("Auto");
-  });
-}
-
-// Fungsi Mode Manual
-function toggleManual() {
-  db.ref("status").once("value").then((snapshot) => {
-    if (snapshot.val()?.mode === "Stopped") updateFirebase("Manual");
-  });
-}
-
-// Fungsi Stop
-function stopMode() {
-  updateFirebase("Stopped");
-}
-
-// Fungsi Emergency
+// Fungsi Tombol
+function toggleAuto() { updateStatus("Auto"); }
+function toggleManual() { updateStatus("Manual"); }
+function stopMode() { updateStatus("Stopped"); }
 function toggleEmergency() {
   db.ref("status").once("value").then((snapshot) => {
-    if (snapshot.val()?.mode !== "Emergency") {
-      updateFirebase("Emergency");
-    } else {
-      updateFirebase("Stopped");
-    }
+    if (snapshot.val()?.mode !== "Emergency") updateStatus("Emergency");
+    else updateStatus("Stopped");
   });
 }
