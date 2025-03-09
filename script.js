@@ -1,4 +1,5 @@
-const firebaseConfig = {
+ // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
     apiKey: "AIzaSyBqiOw_mb-84K2K_Zjx_HP5nGSk9_w_p2E",
     authDomain: "automatic-storage-system-c3ddf.firebaseapp.com",
     databaseURL: "https://automatic-storage-system-c3ddf-default-rtdb.firebaseio.com",
@@ -11,6 +12,7 @@ const firebaseConfig = {
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 
 let autoMode = false;
 let manualMode = false;
